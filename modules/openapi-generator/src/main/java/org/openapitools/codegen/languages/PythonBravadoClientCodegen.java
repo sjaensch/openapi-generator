@@ -39,7 +39,6 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
     private static final Logger LOGGER = LoggerFactory.getLogger(PythonBravadoClientCodegen.class);
 
     public static final String PACKAGE_URL = "packageUrl";
-    public static final String DEFAULT_LIBRARY = "urllib3";
 
     protected String packageName; // e.g. petstore_api
     protected String packageVersion;
@@ -62,7 +61,7 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
         supportsInheritance = true;
         modelPackage = "models";
         apiPackage = "api";
-        outputFolder = "generated-code" + File.separatorChar + "python";
+        outputFolder = "generated-code" + File.separatorChar + "python-bravado";
 
         modelTemplateFiles.put("model.mustache", ".py");
         apiTemplateFiles.put("api.mustache", ".py");
@@ -70,7 +69,7 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
         modelTestTemplateFiles.put("model_test.mustache", ".py");
         apiTestTemplateFiles.put("api_test.mustache", ".py");
 
-        embeddedTemplateDir = templateDir = "python";
+        embeddedTemplateDir = templateDir = "python-bravado";
 
         modelDocTemplateFiles.put("model_doc.mustache", ".md");
         apiDocTemplateFiles.put("api_doc.mustache", ".md");
@@ -138,7 +137,7 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
 
         cliOptions.clear();
         cliOptions.add(new CliOption(CodegenConstants.PACKAGE_NAME, "python package name (convention: snake_case).")
-                .defaultValue("openapi_client"));
+                .defaultValue("openapi_bravado_client"));
         cliOptions.add(new CliOption(CodegenConstants.PROJECT_NAME, "python project name in setup.py (e.g. petstore-api)."));
         cliOptions.add(new CliOption(CodegenConstants.PACKAGE_VERSION, "python package version.")
                 .defaultValue("1.0.0"));
@@ -149,15 +148,6 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
                 .defaultValue(Boolean.TRUE.toString()));
         cliOptions.add(new CliOption(CodegenConstants.SOURCECODEONLY_GENERATION, CodegenConstants.SOURCECODEONLY_GENERATION_DESC)
                 .defaultValue(Boolean.FALSE.toString()));
-
-        supportedLibraries.put("urllib3", "urllib3-based client");
-        supportedLibraries.put("asyncio", "Asyncio-based client (python 3.5+)");
-        supportedLibraries.put("tornado", "tornado-based client");
-        supportedLibraries.put("bravado", "bravado-based client");
-        CliOption libraryOption = new CliOption(CodegenConstants.LIBRARY, "library template (sub-template) to use: asyncio, bravado, tornado, urllib3");
-        libraryOption.setDefault(DEFAULT_LIBRARY);
-        cliOptions.add(libraryOption);
-        setLibrary(DEFAULT_LIBRARY);
     }
 
     @Override
@@ -247,17 +237,9 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
             supportingFiles.add(new SupportingFile("__init__test.mustache", testFolder, "__init__.py"));
         }
 
-        supportingFiles.add(new SupportingFile("api_client.mustache", packagePath(), "api_client.py"));
+        supportingFiles.add(new SupportingFile("client.mustache", packagePath(), "client.py"));
 
-        if ("asyncio".equals(getLibrary())) {
-            supportingFiles.add(new SupportingFile("asyncio/rest.mustache", packagePath(), "rest.py"));
-            additionalProperties.put("asyncio", "true");
-        } else if ("tornado".equals(getLibrary())) {
-            supportingFiles.add(new SupportingFile("tornado/rest.mustache", packagePath(), "rest.py"));
-            additionalProperties.put("tornado", "true");
-        } else {
-            supportingFiles.add(new SupportingFile("rest.mustache", packagePath(), "rest.py"));
-        }
+        supportingFiles.add(new SupportingFile("rest.mustache", packagePath(), "rest.py"));
 
         modelPackage = packageName + "." + modelPackage;
         apiPackage = packageName + "." + apiPackage;
@@ -336,12 +318,12 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
 
     @Override
     public String getName() {
-        return "python";
+        return "python-bravado";
     }
 
     @Override
     public String getHelp() {
-        return "Generates a Python client library.";
+        return "Generates a Python Bravado client library.";
     }
 
     @Override
@@ -523,7 +505,7 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
         name = name.replaceAll("-", "_");
 
         // e.g. PhoneNumberApi.py => phone_number_api.py
-        return underscore(name) + "_api";
+        return underscore(name);
     }
 
     @Override
@@ -537,15 +519,15 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
             return "DefaultApi";
         }
         // e.g. phone_number_api => PhoneNumberApi
-        return camelize(name) + "Api";
+        return camelize(name);
     }
 
     @Override
     public String toApiVarName(String name) {
         if (name.length() == 0) {
-            return "default_api";
+            return "default";
         }
-        return underscore(name) + "_api";
+        return underscore(name);
     }
 
     @Override
