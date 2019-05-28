@@ -30,86 +30,23 @@ class {{classname}}(object):
         self.api_client = api_client
 {{#operation}}
 
-    def {{operationId}}(self, {{#sortParamsByRequiredFlag}}{{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}{{/sortParamsByRequiredFlag}}**kwargs):  # noqa: E501
+    def {{operationId}}(self, {{#sortParamsByRequiredFlag}}{{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}{{/sortParamsByRequiredFlag}}, _request_options={}):  # noqa: E501
         """{{#summary}}{{{.}}}{{/summary}}{{^summary}}{{operationId}}{{/summary}}  # noqa: E501
 
 {{#notes}}
         {{{notes}}}  # noqa: E501
 {{/notes}}
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-{{#sortParamsByRequiredFlag}}
-        >>> thread = api.{{operationId}}({{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}async_req=True)
-{{/sortParamsByRequiredFlag}}
-{{^sortParamsByRequiredFlag}}
-        >>> thread = api.{{operationId}}({{#allParams}}{{#required}}{{paramName}}={{paramName}}_value, {{/required}}{{/allParams}}async_req=True)
-{{/sortParamsByRequiredFlag}}
-        >>> result = thread.get()
 
-        :param async_req bool
 {{#allParams}}
         :param {{dataType}} {{paramName}}:{{#description}} {{{description}}}{{/description}}{{#required}} (required){{/required}}{{#optional}}(optional){{/optional}}
 {{/allParams}}
-        :return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}None{{/returnType}}
-                 If the method is called asynchronously,
-                 returns the request thread.
+        :param dict _request_options: `bravado request options <https://bravado.readthedocs.io/en/stable/configuration.html#per-request-configuration>`_.
+            Currently ``response_callbacks``, ``use_msgpack`` and ``force_fallback_result`` are not supported.
+        :return: a future object with the bravado.http_future.HttpFuture interface.
         """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.{{operationId}}_with_http_info({{#sortParamsByRequiredFlag}}{{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}{{/sortParamsByRequiredFlag}}**kwargs)  # noqa: E501
-        else:
-            (data) = self.{{operationId}}_with_http_info({{#sortParamsByRequiredFlag}}{{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}{{/sortParamsByRequiredFlag}}**kwargs)  # noqa: E501
-            return data
-
-    def {{operationId}}_with_http_info(self, {{#sortParamsByRequiredFlag}}{{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}{{/sortParamsByRequiredFlag}}**kwargs):  # noqa: E501
-        """{{#summary}}{{{.}}}{{/summary}}{{^summary}}{{operationId}}{{/summary}}  # noqa: E501
-
-{{#notes}}
-        {{{notes}}}  # noqa: E501
-{{/notes}}
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-{{#sortParamsByRequiredFlag}}
-        >>> thread = api.{{operationId}}_with_http_info({{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}async_req=True)
-{{/sortParamsByRequiredFlag}}
-{{^sortParamsByRequiredFlag}}
-        >>> thread = api.{{operationId}}_with_http_info({{#allParams}}{{#required}}{{paramName}}={{paramName}}_value, {{/required}}{{/allParams}}async_req=True)
-{{/sortParamsByRequiredFlag}}
-        >>> result = thread.get()
-
-        :param async_req bool
-{{#allParams}}
-        :param {{dataType}} {{paramName}}:{{#description}} {{{description}}}{{/description}}{{#required}} (required){{/required}}{{#optional}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/optional}}
-{{/allParams}}
-        :return: {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}None{{/returnType}}
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        {{#servers.0}}
-        local_var_hosts = [{{#servers}}'{{{url}}}'{{^-last}}, {{/-last}}{{/servers}}]  # noqa: E501
-        local_var_host = local_var_hosts[0]
-        if kwargs.get('_host_index'):
-            if int(kwags.get('_host_index')) < 0 or int(kawgs.get('_host_index')) >= len(local_var_hosts):
-                raise ApiValueError("Invalid host index. Must be 0 <= index < %s" % len(local_var_host))
-            local_var_host = local_var_hosts[int(kwargs.get('_host_index'))]
-        {{/servers.0}}
-        local_var_params = locals()
 
         all_params = [{{#allParams}}'{{paramName}}'{{#hasMore}}, {{/hasMore}}{{/allParams}}]  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
-            if key not in all_params{{#servers.0}} and key != "_host_index"{{/servers.0}}:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method {{operationId}}" % key
-                )
-            local_var_params[key] = val
-        del local_var_params['kwargs']
 {{#allParams}}
 {{^isNullable}}
 {{#required}}
