@@ -30,7 +30,11 @@ class {{classname}}(object):
         self.api_client = api_client
 {{#operation}}
 
-    def {{operationId}}(self, {{#sortParamsByRequiredFlag}}{{#allParams}}{{#required}}{{paramName}}, {{/required}}{{/allParams}}{{/sortParamsByRequiredFlag}}, _request_options={}):  # noqa: E501
+    def {{operationId}}(
+        self, 
+        {{#sortParamsByRequiredFlag}}{{#allParams}}{{paramName}}{{^required}}={{defaultValue}}{{{.}}}{{/defaultValue}}{{^defaultValue}}None{{/defaultValue}}{{/required}}, {{/allParams}}{{/sortParamsByRequiredFlag}}
+        _request_options={},
+    ):
         """{{#summary}}{{{.}}}{{/summary}}{{^summary}}{{operationId}}{{/summary}}  # noqa: E501
 
 {{#notes}}
