@@ -5,6 +5,10 @@
 from __future__ import absolute_import
 
 import re  # noqa: F401
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
 
 # python 2 and python 3 compatibility library
 import six
@@ -32,8 +36,8 @@ class {{classname}}(object):
 
     def {{operationId}}(
         self, 
-        {{#sortParamsByRequiredFlag}}{{#allParams}}{{paramName}}{{^required}}={{defaultValue}}{{{.}}}{{/defaultValue}}{{^defaultValue}}None{{/defaultValue}}{{/required}}, {{/allParams}}{{/sortParamsByRequiredFlag}}
-        _request_options={},
+        {{#sortParamsByRequiredFlag}}{{#allParams}}{{paramName}}{{#defaultValue}}={{{.}}}{{/defaultValue}}{{^defaultValue}}{{^required}}=None{{/required}}{{/defaultValue}},  # type: {{#isNullable}}Optional[{{dataType}}]{{/isNullable}}{{^isNullable}}{{^required}}Optional[{{dataType}}]{{/required}}{{#required}}{{dataType}}{{/required}}{{/isNullable}}
+        {{/allParams}}{{/sortParamsByRequiredFlag}}_request_options={},  # type: Dict[str, Any]
     ):
         """{{#summary}}{{{.}}}{{/summary}}{{^summary}}{{operationId}}{{/summary}}  # noqa: E501
 

@@ -98,8 +98,8 @@ public class PythonBravadoClientCodegen extends DefaultCodegen implements Codege
         typeMapping.put("number", "float");
         typeMapping.put("long", "int");
         typeMapping.put("double", "float");
-        typeMapping.put("array", "list");
-        typeMapping.put("map", "dict");
+        typeMapping.put("array", "List");
+        typeMapping.put("map", "Dict");
         typeMapping.put("boolean", "bool");
         typeMapping.put("string", "str");
         typeMapping.put("date", "date");
